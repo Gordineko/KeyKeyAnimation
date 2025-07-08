@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import "../style/Animate.css";
 import ActiveBtn from "./ActiveBtn";
 
-const MAX_SHIFT = 30; // максимальное смещение в px
+const MAX_SHIFT = 30;
 
 const Animate = ({ revealSite, hideIntro }) => {
   const videoRef = useRef(null);
@@ -12,8 +12,9 @@ const Animate = ({ revealSite, hideIntro }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  /* ---------- запуск видео ---------- */
-  const handleClick = () => {
+  /* ---------- универсальный запуск ---------- */
+  const startVideo = () => {
+    if (isPlaying) return;
     const video = videoRef.current;
     if (video) {
       video.play();
@@ -22,13 +23,25 @@ const Animate = ({ revealSite, hideIntro }) => {
     }
   };
 
+  /** Запуск кликом */
+  const handleClick = () => startVideo();
+
+  /** Запуск любой клавишей */
+  useEffect(() => {
+    const handleKey = (e) => {
+      // можно отфильтровать служебные клавиши при желании
+      startVideo();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [isPlaying]);
+
   /* ---------- курсорный параллакс ---------- */
   useEffect(() => {
     if (!isPlaying) return;
 
     const handleMouseMove = (e) => {
       const { innerWidth, innerHeight } = window;
-      // нормируем координаты: -1 .. 1
       const normX = (e.clientX - innerWidth / 2) / (innerWidth / 2);
       const normY = (e.clientY - innerHeight / 2) / (innerHeight / 2);
       setOffset({
@@ -60,7 +73,7 @@ const Animate = ({ revealSite, hideIntro }) => {
   /* ---------- конец видео → шторка уезжает ---------- */
   const handleEnded = () => {
     setSlide(true);
-    setIsPlaying(false); // чтобы убрать обработчик мыши
+    setIsPlaying(false);
   };
 
   /* ---------- размонтируем интро после анимации уезда ---------- */
@@ -82,7 +95,6 @@ const Animate = ({ revealSite, hideIntro }) => {
         muted
         playsInline
         onEnded={handleEnded}
-        /* применяем смещение + лёгкое увеличение, чтобы края не были видны */
         style={{
           transform: `translate(${offset.x}px, ${offset.y}px) scale(1.05)`,
           transition: "transform 0.1s linear", // быстро, но без дёрганий
