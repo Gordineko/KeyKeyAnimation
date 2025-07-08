@@ -1,0 +1,66 @@
+.video-button {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  margin-top: 50px;
+  font-family: Arial, sans-serif;
+}
+
+.video-button__text {
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  display: inline-block;
+  animation: blink 1.5s infinite;
+  background: inherit;
+  
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+    
+  }
+  50% {
+    opacity: 0.7;
+   
+  }
+}
+
+.video-button__arrows {
+  transform: translateY(-10px);
+}
+
+.arrow {
+  transform: rotate(90deg);
+  width: 20px;
+  height: 20px;
+  margin: 1px auto;
+  border-left: 3px solid #fff;
+  border-bottom: 3px solid #fff;
+
+  animation: arrowBlink 1.5s infinite;
+  opacity: 0.8;
+}
+
+.arrow:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+@keyframes arrowBlink {
+  0%,
+  100% {
+    transform: translateY(-5px) rotate(-45deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(5px) rotate(-45deg);
+    opacity: 1;
+  }
+}
